@@ -24,6 +24,8 @@ body {
     font-family: 'Lato', sans-serif;
     color: darkcyan;
     font-weight: bold; 
+    font-size: large; 
+   
     
 }
 
@@ -49,6 +51,29 @@ body {
     
 }
 
+.navbar-nav > li > a {
+   background-color: darkslategray;
+    font-family: 'Roboto Slab', serif;
+    color: navy;
+    font-weight: 700; 
+    font-size: large;  
+    
+}
+
+#owl {
+    top: -55px; 
+    margin-left: 50px; 
+    
+}
+#div {
+    background-color: darkslategray;
+    font-family: 'Roboto Slab', serif;
+    color: navy;
+    font-weight: 700; 
+    font-size: large; 
+}
+
+
 html {
   position: relative;
   min-height: 100%;
@@ -63,7 +88,7 @@ body {
  width: 96%;
   /* Set the fixed height of the footer here */
   height: 70px;
-  background-color: cadetblue;
+  background-color: darkslategray;
   color: navy; 
   left: 15px; 
 

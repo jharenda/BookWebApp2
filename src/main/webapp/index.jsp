@@ -21,7 +21,9 @@
             /* Remove the navbar's default rounded borders and increase the bottom margin */ 
             .navbar {
                 margin-bottom: 50px;
-                border-radius: 0;
+             border-radius: 5px;
+             background-color: cadetblue;
+             color: black; 
             }
 
             /* Remove the jumbotron's default bottom margin */ 
@@ -34,22 +36,28 @@
                 background-color: #f2f2f2;
                 padding: 25px;
             }
+            body {
+            font-size: large;  
+            }
         </style>
     </head>
-    
+    <div class="c"> 
         <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
+        <div class="container-fluid" id="nav">
             <div class="navbar-header">
+                 
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>                        
                 </button>
                 <a class="navbar-brand" href="#">Book Web App!</a>
+              
             </div>
-            <div class="collapse navbar-collapse" id="myNavbar">
+            <div id ="div">
+            <div class="collapse navbar-collapse" >
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active" id="myNavbar"><a href="#">Home</a></li>
                     <li><a href="#">Products</a></li>
                     <li><a href="#">Deals</a></li>
                     <li><a href="#">Locations</a></li>
@@ -59,9 +67,15 @@
                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> Your Account</a></li>
                     <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
                 </ul>
+                </div>
+               
             </div>
+            
         </div>
+             
         </nav>
+        </div>
+     <img src ="owlbook.jpg" width="200" height="120" id="owl" >
     <div class="container">
         <body>
             <h1>
