@@ -78,6 +78,7 @@
      <img src ="owlbook.jpg" width="200" height="120" id="owl" >
     <div class="container">
         <body>
+            <jsp:include page ="header.jsp" /> 
             <h1>
                 Administrative Author Tasks
             </h1>

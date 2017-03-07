@@ -46,6 +46,8 @@
         </style>
     </head>
     
+       <jsp:include page ="header.jsp" /> 
+    
         <nav class="navbar navbar-inverse">
         <div class="container-fluid" id="nav">
             <div class="navbar-header">

@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 package edu.wctc.jls.bookwebapp2.controller;
+
 import edu.wctc.jls.bookwebapp2.model.Author;
 import edu.wctc.jls.bookwebapp2.model.AuthorDao;
 import edu.wctc.jls.bookwebapp2.model.AuthorService;
 import edu.wctc.jls.bookwebapp2.model.DateHelper;
+import edu.wctc.jls.bookwebapp2.model.DbAccessor;
+import edu.wctc.jls.bookwebapp2.model.IAuthorDao;
 import edu.wctc.jls.bookwebapp2.model.MySqlDbAccessor;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,11 +22,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Constructor;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 
 /**
  *
  * @author Jennifer
  */
+//servlets can use annoations, serciurity and timeouts can't use annotatins- have to use web.xml
+//annotations only work in 6 or higher- sensidble defaults, easer than xml
+// a lot of stuff we have to use web xml for though- always have it available as an option
+//web xml and annotations can co-exist together
+// choosing which one depends on what features you might like
+// two wizards for mml 
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
 
@@ -52,6 +66,15 @@ public class AuthorController extends HttpServlet {
     public final String SAVE_REQ = "saveAuthor";
     public final String DELETE_AUTH_REQ = "deleteAuthor";
 
+    private String driverClass;
+    private String url;
+    private String userName;
+    private String password;
+
+    private String dbStrategyClassName;
+    private String daoClassName;
+    private String jndiName;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -68,12 +91,17 @@ public class AuthorController extends HttpServlet {
         String req_Action = request.getParameter(REQ_TYPE);
 
         try {
-            AuthorService authorService = new AuthorService(
-                    new AuthorDao(
-                            new MySqlDbAccessor(), "com.mysql.jdbc.Driver",
-                            "jdbc:mysql://localhost:3306/book",
-                            "root", "admin")
-            );
+            //AuthorService authorService = new AuthorService(
+            //  new AuthorDao(
+            //new MySqlDbAccessor(), "com.mysql.jdbc.Driver",
+            // "jdbc:mysql://localhost:3306/book",
+            // "root", "admin")
+
+          //  AuthorService authorService = new AuthorService(
+              //      new AuthorDao(new MySqlDbAccessor(),
+                      //      driverClass, url, userName, password));
+                      
+                      AuthorService authorService = injectDependenciesAndGetAuthorService(); 
 
             switch (req_Action) {
                 case AUTHOR_LIST_REQ:
@@ -100,48 +128,45 @@ public class AuthorController extends HttpServlet {
 
                     break;
 
-             
                 case EDIT_AUTH_REQ:
                     destination = EDIT_AUTHOR_PAGE;
-                   // String authorName1 = request.getParameter(AUTH_NAME);
+                    // String authorName1 = request.getParameter(AUTH_NAME);
                     String id = request.getParameter(AUTHOR_ID);
 
-                   Author author = authorService.retrieveAuthor(AUTH_TABLE_NAME, AUTH_ID_COL, id);
+                    Author author = authorService.retrieveAuthor(AUTH_TABLE_NAME, AUTH_ID_COL, id);
                     request.setAttribute(AUTH_ID, author.getAuth_ID());
                     request.setAttribute(AUTH_NAME, author.getAuth_Name());
                     request.setAttribute(DATE_ADDED, author.getDate());
-                    
-                    
+
                     break;
-                       case SAVE_REQ:
+                case SAVE_REQ:
                     destination = AUTH_LIST_PAGE;
 
                     String authorName = request.getParameter(AUTH_NAME);
-                      String req_id = request.getParameter(AUTH_ID);
+                    String req_id = request.getParameter(AUTH_ID);
 
-                     if (req_id == null || req_id.isEmpty()) {
-                    DateHelper dh = new DateHelper();
-                    String date = dh.currentDate();
+                    if (req_id == null || req_id.isEmpty()) {
+                        DateHelper dh = new DateHelper();
+                        String date = dh.currentDate();
 
-                    List<String> colNames = new ArrayList<>();
-                    colNames.add(AUTH_NAME_COL);
-                    colNames.add(DATE_COL);
-                    List<Object> colValues = new ArrayList<>();
-                    colValues.add(authorName);
-                    colValues.add(date);
+                        List<String> colNames = new ArrayList<>();
+                        colNames.add(AUTH_NAME_COL);
+                        colNames.add(DATE_COL);
+                        List<Object> colValues = new ArrayList<>();
+                        colValues.add(authorName);
+                        colValues.add(date);
 
-                    authorService.addNewAuthor(AUTH_TABLE_NAME,
-                            colNames, colValues);
-                     }
-                     else {
-                          List<String> colNames2 = new ArrayList<>();
-                      colNames2.add(AUTH_NAME_COL);
-                     List<Object> colValues2 = new ArrayList<>();
-                     colValues2.add(authorName);
-                      authorService.updateAuthorById(AUTH_TABLE_NAME, colNames2,
-                             colValues2, AUTH_ID_COL, req_id);
-                     }
-                  
+                        authorService.addNewAuthor(AUTH_TABLE_NAME,
+                                colNames, colValues);
+                    } else {
+                        List<String> colNames2 = new ArrayList<>();
+                        colNames2.add(AUTH_NAME_COL);
+                        List<Object> colValues2 = new ArrayList<>();
+                        colValues2.add(authorName);
+                        authorService.updateAuthorById(AUTH_TABLE_NAME, colNames2,
+                                colValues2, AUTH_ID_COL, req_id);
+                    }
+
                     refreshResults(request, authorService);
 
                     break;
@@ -158,6 +183,76 @@ public class AuthorController extends HttpServlet {
                 = request.getRequestDispatcher(destination);
         view.forward(request, response);
     }
+    
+    
+     /*
+        This helper method just makes the code more modular and readable.
+        It's single responsibility principle for a method.
+    */
+    private AuthorService injectDependenciesAndGetAuthorService() throws Exception {
+        // Use Liskov Substitution Principle and Java Reflection to
+        // instantiate the chosen DBStrategy based on the class name retrieved
+        // from web.xml
+        Class dbClass = Class.forName(dbStrategyClassName);
+        // Use Java reflection to instanntiate the DBStrategy object
+        // Note that DBStrategy classes have no constructor params
+        DbAccessor db = (DbAccessor) dbClass.newInstance();
+
+        // Use Liskov Substitution Principle and Java Reflection to
+        // instantiate the chosen DAO based on the class name retrieved above.
+        // This one is trickier because the available DAO classes have
+        // different constructor params
+        IAuthorDao authorDao = null;
+        Class daoClass = Class.forName(daoClassName);
+        Constructor constructor = null;
+        
+        // This will only work for the non-pooled AuthorDao
+        try {
+            constructor = daoClass.getConstructor(new Class[]{
+                DbAccessor.class, String.class, String.class, String.class, String.class
+            });
+        } catch(NoSuchMethodException nsme) {
+            // do nothing, the exception means that there is no such constructor,
+            // so code will continue executing below
+        }
+
+        // constructor will be null if using connectin pool dao because the
+        // constructor has a different number and type of arguments
+        
+        if (constructor != null) {
+            // conn pool NOT used so constructor has these arguments
+            Object[] constructorArgs = new Object[]{
+                db, driverClass, url, userName, password
+            };
+            authorDao = (IAuthorDao) constructor
+                    .newInstance(constructorArgs);
+
+        } else {
+            /*
+             Here's what the connection pool version looks like. First
+             we lookup the JNDI name of the Glassfish connection pool
+             and then we use Java Refletion to create the needed
+             objects based on the servlet init params
+             */
+            Context ctx = new InitialContext();
+            //for pcs only
+            DataSource ds = (DataSource) ctx.lookup(jndiName);
+            //for macs only 
+            //Context envCtx = (Context) ctx.lookup("java:comp/env");
+           // DataSource ds = (DataSource) envCtx.lookup(jndiName);
+            constructor = daoClass.getConstructor(new Class[]{
+                DataSource.class, DbAccessor.class
+            });
+            Object[] constructorArgs = new Object[]{
+                ds, db
+            };
+
+            authorDao = (IAuthorDao) constructor
+                    .newInstance(constructorArgs);
+        }
+        
+        return new AuthorService(authorDao);
+    }
 
     private void refreshResults(HttpServletRequest request, AuthorService authorService)
             throws ClassNotFoundException, SQLException {
@@ -165,7 +260,6 @@ public class AuthorController extends HttpServlet {
                 AUTH_TABLE_NAME, 50);
         request.setAttribute("authors", authors);
     }
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -205,5 +299,21 @@ public class AuthorController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    @Override
+    public void init() throws ServletException {
+        driverClass = getServletContext()
+                .getInitParameter("db.driver.class");
+        url = getServletContext()
+                .getInitParameter("db.url");
+        userName = getServletContext()
+                .getInitParameter("db.username");
+        password = getServletContext()
+                .getInitParameter("db.password");
+
+        dbStrategyClassName = getServletContext().getInitParameter("dbStrategy");
+        daoClassName = getServletContext().getInitParameter("AuthorDao");
+        jndiName = getServletContext().getInitParameter("connPoolName");
+    }
 
 }

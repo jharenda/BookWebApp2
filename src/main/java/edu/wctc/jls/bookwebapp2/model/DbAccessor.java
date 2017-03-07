@@ -4,6 +4,7 @@ package edu.wctc.jls.bookwebapp2.model;
 import java.util.List;
 import java.util.Map;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 
 /**
  *
@@ -16,6 +17,7 @@ public interface DbAccessor {
      
     public int insertAuthor(String tableName, List<String> colNames, List<Object> 
             colValues) throws SQLException;
+     public  void openConnection(DataSource ds) throws SQLException; 
      
     public abstract List<Map<String, Object>> getAllRecords(String table,
             int maxRecords) throws SQLException;
