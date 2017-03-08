@@ -23,10 +23,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Constructor;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-
 
 /**
  *
@@ -47,6 +51,8 @@ public class AuthorController extends HttpServlet {
     public final String AUTH_LIST_PAGE = "/authorList.jsp";
     public final String ADD_AUTHOR_PAGE = "/addAuthor.jsp";
     public final String EDIT_AUTHOR_PAGE = "/editAuthor.jsp";
+    public final String INFO_PAGE = "/adminInfo.jsp";
+     public final String HELP_PAGE = "/session.jsp";
 
     //these are the values "grabbed" from the page
     public final String AUTH_ID = "authorId";
@@ -65,6 +71,10 @@ public class AuthorController extends HttpServlet {
     public final String EDIT_AUTH_REQ = "editAuthor";
     public final String SAVE_REQ = "saveAuthor";
     public final String DELETE_AUTH_REQ = "deleteAuthor";
+    public final String HELP = "help";
+    public final String VIEW_EMAIL_REQ = "viewEmail";
+    public final String EDIT_COUNT = "";
+    public final String LIST_COUNT = "";
 
     private String driverClass;
     private String url;
@@ -74,6 +84,9 @@ public class AuthorController extends HttpServlet {
     private String dbStrategyClassName;
     private String daoClassName;
     private String jndiName;
+    private int sessionListPageVisits = 0;
+    private int sessionEditPageVisits = 0;
+    private int serverStarts = 0; 
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -87,8 +100,14 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        ServletContext ctx = request.getServletContext();
+
         String destination = HOME_PAGE;
         String req_Action = request.getParameter(REQ_TYPE);
+        ServletContext sc =
+      getServletConfig().getServletContext();
+    String adminEmail = sc.getInitParameter("admin email");
 
         try {
             //AuthorService authorService = new AuthorService(
@@ -97,19 +116,22 @@ public class AuthorController extends HttpServlet {
             // "jdbc:mysql://localhost:3306/book",
             // "root", "admin")
 
-          //  AuthorService authorService = new AuthorService(
-              //      new AuthorDao(new MySqlDbAccessor(),
-                      //      driverClass, url, userName, password));
-                      
-                      AuthorService authorService = injectDependenciesAndGetAuthorService(); 
+            //  AuthorService authorService = new AuthorService(
+            //      new AuthorDao(new MySqlDbAccessor(),
+            //      driverClass, url, userName, password));
+            AuthorService authorService = injectDependenciesAndGetAuthorService();
 
             switch (req_Action) {
+
                 case AUTHOR_LIST_REQ:
                     destination = AUTH_LIST_PAGE;
+                    sessionListPageVisits++;
+                    
                     List<Author> authors = authorService.retrieveAuthors(
                             //should fix the magic number here- 50
                             AUTH_TABLE_NAME, 50);
                     request.setAttribute("authors", authors);
+                    request.setAttribute("sessionListPageVisits", sessionListPageVisits);
                     break;
                 case DELETE_AUTH_REQ:
                     destination = AUTH_LIST_PAGE;
@@ -127,9 +149,16 @@ public class AuthorController extends HttpServlet {
                     destination = ADD_AUTHOR_PAGE;
 
                     break;
+                
+                case VIEW_EMAIL_REQ:
+                    destination= INFO_PAGE;
+                     request.setAttribute("adminEmail", adminEmail);
+                    break;
 
                 case EDIT_AUTH_REQ:
                     destination = EDIT_AUTHOR_PAGE;
+                    sessionEditPageVisits++;
+                    String count = Integer.toString(sessionEditPageVisits);
                     // String authorName1 = request.getParameter(AUTH_NAME);
                     String id = request.getParameter(AUTHOR_ID);
 
@@ -137,7 +166,7 @@ public class AuthorController extends HttpServlet {
                     request.setAttribute(AUTH_ID, author.getAuth_ID());
                     request.setAttribute(AUTH_NAME, author.getAuth_Name());
                     request.setAttribute(DATE_ADDED, author.getDate());
-
+                    request.setAttribute(EDIT_COUNT, count);
                     break;
                 case SAVE_REQ:
                     destination = AUTH_LIST_PAGE;
@@ -174,6 +203,10 @@ public class AuthorController extends HttpServlet {
                 case "home":
                     destination = destination = HOME_PAGE;
                     break;
+                    case HELP: 
+                    response.sendRedirect("/newjsp.jsp");
+                    break; 
+                    
             }
         } catch (Exception e) {
             destination = HOME_PAGE;
@@ -183,12 +216,11 @@ public class AuthorController extends HttpServlet {
                 = request.getRequestDispatcher(destination);
         view.forward(request, response);
     }
-    
-    
-     /*
+
+    /*
         This helper method just makes the code more modular and readable.
         It's single responsibility principle for a method.
-    */
+     */
     private AuthorService injectDependenciesAndGetAuthorService() throws Exception {
         // Use Liskov Substitution Principle and Java Reflection to
         // instantiate the chosen DBStrategy based on the class name retrieved
@@ -205,20 +237,19 @@ public class AuthorController extends HttpServlet {
         IAuthorDao authorDao = null;
         Class daoClass = Class.forName(daoClassName);
         Constructor constructor = null;
-        
+
         // This will only work for the non-pooled AuthorDao
         try {
             constructor = daoClass.getConstructor(new Class[]{
                 DbAccessor.class, String.class, String.class, String.class, String.class
             });
-        } catch(NoSuchMethodException nsme) {
+        } catch (NoSuchMethodException nsme) {
             // do nothing, the exception means that there is no such constructor,
             // so code will continue executing below
         }
 
         // constructor will be null if using connectin pool dao because the
         // constructor has a different number and type of arguments
-        
         if (constructor != null) {
             // conn pool NOT used so constructor has these arguments
             Object[] constructorArgs = new Object[]{
@@ -239,7 +270,7 @@ public class AuthorController extends HttpServlet {
             DataSource ds = (DataSource) ctx.lookup(jndiName);
             //for macs only 
             //Context envCtx = (Context) ctx.lookup("java:comp/env");
-           // DataSource ds = (DataSource) envCtx.lookup(jndiName);
+            // DataSource ds = (DataSource) envCtx.lookup(jndiName);
             constructor = daoClass.getConstructor(new Class[]{
                 DataSource.class, DbAccessor.class
             });
@@ -250,7 +281,7 @@ public class AuthorController extends HttpServlet {
             authorDao = (IAuthorDao) constructor
                     .newInstance(constructorArgs);
         }
-        
+
         return new AuthorService(authorDao);
     }
 

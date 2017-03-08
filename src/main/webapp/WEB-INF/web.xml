@@ -23,6 +23,10 @@ servlet. -->
 <param-value>admin</param-value>
 </context-param>
 <context-param>
+   <param-name>admin email</param-name>
+   <param-value>admin@jspbook.com</param-value>
+   </context-param>
+<context-param>
         <param-name>connPoolName</param-name>
         <param-value>jdbc/book</param-value>
     </context-param>

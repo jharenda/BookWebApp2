@@ -143,7 +143,8 @@
             </form>       
             <br>
             <br>
-            
+           <p>Visits to this page this session: ${sessionListPageVisits}</p>
+           
         </body>
   <footer class="footer">
           <p>&copy; 2016<script>new Date().getFullYear()>2016&&document.write("-"+new Date().getFullYear());</script>, Jennifer Scheidegger.</p>

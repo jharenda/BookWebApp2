@@ -77,20 +77,51 @@
         </div>
      <img src ="owlbook.jpg" width="200" height="120" id="owl" >
     <div class="container">
+        
         <body>
             <jsp:include page ="header.jsp" /> 
-            <h1>
+            <h1 style="color: ${fontColor}">
                 Administrative Author Tasks
             </h1>
+            
+           <form method="POST" action="AuthorController">
+            Enter page background color (per user): <input name="color" value="" /> <br>
+            Enter font color (per application): <input name="fontColor" value="" /> <br>
+            <input name="submit" value="Submit" type="submit">
+        </form>
             <p id ="listLink">  <a href="AuthorController?requestType=authorList">View Author List</a></p>
-                  
-       
+            <p id ="sessionInfo">  <a href="AuthorController?requestType=viewEmail">EMAIL Info</a></p>
+                 <p id ="listLink">  <a href="AuthorController?requestType=help">Help</a></p>
+       <table border="1" align="center"> 
+<tr bgcolor="#949494">
+   <th>Session info</th>
+   <th>Value</th>
+</tr> 
+ 
+<tr>
+   <td>Creation Time</td>
+   <td><${create}></td>
+</tr> 
+<tr>
+   <td>Time of Last Access</td>
+   <td><${last}></td>
+</tr> 
+<tr>
+   <td>User ID</td>
+   <td><${user}></td>
+</tr> 
+<tr>
+   <td>Number of visits</td>
+   <td><${visit}></td>
+</tr> 
+</table> 
 <footer class="footer">
           <p>&copy; 2016<script>new Date().getFullYear()>2016&&document.write("-"+new Date().getFullYear());</script>, Jennifer Scheidegger.</p>
            
         </footer>  
         
-    </div>
+   </div>
  
 </body>
 </html>
+/// make an about page that doesn't need a redirect
