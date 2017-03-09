@@ -5,7 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<html>
+
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="language" value="${pageContext.request.locale}"
+scope="session" />
+<fmt:setBundle basename="edu.wctc.jls.bookwebapp2.i18n.messages" />
+<html lang="${language}"><html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
          <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -79,19 +86,17 @@
     <div class="container">
         
         <body>
+            <h1><fmt:message key="home.title"/></h1>
+            
+            
             <jsp:include page ="header.jsp" /> 
             <h1 style="color: ${fontColor}">
                 Administrative Author Tasks
             </h1>
             
-           <form method="POST" action="AuthorController">
-            Enter page background color (per user): <input name="color" value="" /> <br>
-            Enter font color (per application): <input name="fontColor" value="" /> <br>
-            <input name="submit" value="Submit" type="submit">
-        </form>
             <p id ="listLink">  <a href="AuthorController?requestType=authorList">View Author List</a></p>
             <p id ="sessionInfo">  <a href="AuthorController?requestType=viewEmail">EMAIL Info</a></p>
-                 <p id ="listLink">  <a href="AuthorController?requestType=help">Help</a></p>
+          <p>  <a href="AuthorController">Help</a></p>
        <table border="1" align="center"> 
 <tr bgcolor="#949494">
    <th>Session info</th>
@@ -124,4 +129,3 @@
  
 </body>
 </html>
-/// make an about page that doesn't need a redirect

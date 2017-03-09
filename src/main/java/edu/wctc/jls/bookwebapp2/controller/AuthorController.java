@@ -86,7 +86,7 @@ public class AuthorController extends HttpServlet {
     private String jndiName;
     private int sessionListPageVisits = 0;
     private int sessionEditPageVisits = 0;
-    private int serverStarts = 0; 
+    
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -203,8 +203,10 @@ public class AuthorController extends HttpServlet {
                 case "home":
                     destination = destination = HOME_PAGE;
                     break;
-                    case HELP: 
-                    response.sendRedirect("/newjsp.jsp");
+                    
+                default: 
+                    response.sendRedirect("session.jsp");
+                    
                     break; 
                     
             }
