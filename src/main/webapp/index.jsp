@@ -126,6 +126,16 @@ scope="session" />
         </footer>  
         
    </div>
- 
+  <h1>Listeners Demo</h1>
+        
+        <h3>ServletContextListener Example</h3>
+        <p>The last time the application was restarted: 
+        <fmt:formatDate pattern="M/d/yyyy hh:mm a" value="${appStarted}"></fmt:formatDate>
+        </p>
+        
+        <h3>SessionListener Example</h3>
+        <p>The total number of users who have visited this application: 
+        ${hitCount}
+        </p>
 </body>
 </html>

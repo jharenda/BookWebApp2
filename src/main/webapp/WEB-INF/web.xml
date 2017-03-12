@@ -38,7 +38,16 @@ servlet. -->
         <param-name>dbStrategy</param-name>
         <param-value>edu.wctc.jls.bookwebapp2.model.MySqlDbAccessor</param-value>
     </context-param>
-    
+     <listener>
+        <listener-class>
+            edu.wctc.jls.bookwebapp2.listeners.MySessionListener
+        </listener-class>
+    </listener>
+    <listener>
+        <listener-class>
+            edu.wctc.jls.bookwebapp2.listeners.MyServletContextListener
+        </listener-class>
+    </listener>
     <session-config>
         <session-timeout>
             30
