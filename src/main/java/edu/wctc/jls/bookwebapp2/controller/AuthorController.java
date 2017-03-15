@@ -215,7 +215,7 @@ public class AuthorController extends HttpServlet {
             request.setAttribute("errMsg", e.getMessage());
         }
         RequestDispatcher view
-                = request.getRequestDispatcher(destination);
+                = request.getRequestDispatcher(response.encodeURL(destination));
         view.forward(request, response);
     }
 

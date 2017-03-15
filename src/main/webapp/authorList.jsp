@@ -87,7 +87,7 @@
             </h1>
             <br><a href="AuthorController?requestType=home">Home Page</a>
             
-            <form id="authorFormDelete" name="authorFormDelete" method="POST" action="AuthorController?requestType=deleteAuthor">  
+            <form id="authorFormDelete" name="authorFormDelete" method="POST" action=<%=response.encodeURL("AuthorController?requestType=deleteAuthor")%>
                             <br>            
             <br>
             <div class="table-responsive">
