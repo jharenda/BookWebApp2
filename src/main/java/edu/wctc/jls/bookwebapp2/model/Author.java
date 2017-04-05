@@ -5,77 +5,121 @@
  */
 package edu.wctc.jls.bookwebapp2.model;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
+import java.util.Set;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * This is a domain object, also called an "entity" object. 
+ *
+ * @author Jennifer
+ * we don't need to write the validation- jpa provides annotations for this which we will cover later
+ * no final methods- JPA doesn't want that- sounds like we don't have to do that
  * 
- * @author jlombardo
  */
-public class Author {
-    private String auth_Name;
-    private Integer auth_ID;
-    
-    private Date date;
+@Entity
+@Table(name = "author")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Author.findAll", query = "SELECT a FROM Author a")
+    , @NamedQuery(name = "Author.findByAuthorId", query = "SELECT a FROM Author a WHERE a.authorId = :authorId")
+    , @NamedQuery(name = "Author.findByAuthorName", query = "SELECT a FROM Author a WHERE a.authorName = :authorName")
+    , @NamedQuery(name = "Author.findByDateAdded", query = "SELECT a FROM Author a WHERE a.dateAdded = :dateAdded")})
+public class Author implements Serializable {
+// what the fk relationship is- books will be loaded lazily 
+    @OneToMany(mappedBy = "authorId")
+    private Set<Book> bookSet;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "author_id")
+    private Integer authorId;
+    @Size(max = 80)
+    @Column(name = "author_name")
+    private String authorName;
+    @Column(name = "date_added")
+    @Temporal(TemporalType.DATE)
+    private Date dateAdded;
 
     public Author() {
     }
 
     public Author(Integer authorId) {
-        this.auth_ID = authorId;
+        this.authorId = authorId;
     }
 
-    public Author(Integer auth_ID, String auth_Name, Date date) {
-        this.auth_ID = auth_ID;
-        this.auth_Name = auth_Name;
-        this.date = date;
+    public Integer getAuthorId() {
+        return authorId;
     }
 
-    public final Integer getAuth_ID() {
-        return auth_ID;
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
-    public final void setAuth_ID(Integer auth_ID) {
-        this.auth_ID = auth_ID;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public final String getAuth_Name() {
-        return auth_Name;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
-    public final void setAuth_Name(String auth_Name)  {
-      
-        this.auth_Name = auth_Name;
+    public Date getDateAdded() {
+        return dateAdded;
     }
 
-    public final Date getDate() {
-        return date;
-    }
-
-    public final void setDate(Date date)  {
-         this.date = date;
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     @Override
-    public final int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.auth_ID);
+    public int hashCode() {
+        int hash = 0;
+        hash += (authorId != null ? authorId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public final boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Author)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Author other = (Author) obj;
-        if (!Objects.equals(this.auth_ID, other.auth_ID)) {
+        Author other = (Author) object;
+        if ((this.authorId == null && other.authorId != null) || (this.authorId != null && !this.authorId.equals(other.authorId))) {
             return false;
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "edu.wctc.jls.bookwebapp2.model.Author[ authorId=" + authorId + " ]";
+    }
+
+    @XmlTransient
+    public Set<Book> getBookSet() {
+        return bookSet;
+    }
+
+    public void setBookSet(Set<Book> bookSet) {
+        this.bookSet = bookSet;
+    }
+    
 }

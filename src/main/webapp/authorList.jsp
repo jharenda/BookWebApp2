@@ -114,19 +114,19 @@
                 <c:forEach var="author" items="${authors}" varStatus="varStatus">
                   
                     <td>
-                                    <button type="submit" formaction="AuthorController?requestType=editAuthor&id=${author.auth_ID}" value="${author.auth_ID}" name="editAuthor" id="editAuthor">Edit</button>
+                                    <button type="submit" formaction="AuthorController?requestType=editAuthor&id=${author.authorId}" value="${author.authorId}" name="editAuthor" id="editAuthor">Edit</button>
                                 </td>
                                 <td>
-                                    ${author.auth_ID}
+                                    ${author.authorId}
                                 </td>
                                 <td>
-                                    ${author.auth_Name}
+                                    ${author.authorName}
                                 </td>
                                 <td>
-                                    <fmt:formatDate pattern="M/d/yyyy" value="${author.date}"/>                                 
+                                    <fmt:formatDate pattern="M/d/yyyy" value="${author.dateAdded}"/>                                 
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="authorId" value="${author.auth_ID}">
+                                    <input type="checkbox" name="authorId" value="${author.authorId}">
                                                                     </td>
 
                                     
