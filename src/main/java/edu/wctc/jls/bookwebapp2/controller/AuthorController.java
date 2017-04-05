@@ -81,7 +81,9 @@ public class AuthorController extends HttpServlet {
     
     // new - this autocreates authorservice- this is automated dependency injection
     @EJB
-    private AuthorFacade authorService; 
+    private AuthorFacade authorService;
+    @EJB 
+    private BookFacade bookService; 
    
     
 
