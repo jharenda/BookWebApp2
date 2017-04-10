@@ -86,40 +86,13 @@ scope="session" />
     <div class="container">
         
         <body>
-            <h1><fmt:message key="home.title"/></h1>
-            
-            
-            <jsp:include page ="header.jsp" /> 
+          
             <h1 style="color: ${fontColor}">
                 Administrative Author Tasks
             </h1>
-            
+            <p id ="listLink">  <a href="BookController?requestType=bookList">View Book List</a></p>
             <p id ="listLink">  <a href="AuthorController?requestType=authorList">View Author List</a></p>
-            <p id ="sessionInfo">  <a href="AuthorController?requestType=viewEmail">EMAIL Info</a></p>
-          <p>  <a href="AuthorController">Help</a></p>
-       <table border="1" align="center"> 
-<tr bgcolor="#949494">
-   <th>Session info</th>
-   <th>Value</th>
-</tr> 
- 
-<tr>
-   <td>Creation Time</td>
-   <td><${create}></td>
-</tr> 
-<tr>
-   <td>Time of Last Access</td>
-   <td><${last}></td>
-</tr> 
-<tr>
-   <td>User ID</td>
-   <td><${user}></td>
-</tr> 
-<tr>
-   <td>Number of visits</td>
-   <td><${visit}></td>
-</tr> 
-</table> 
+           
 <footer class="footer">
           <p>&copy; 2016<script>new Date().getFullYear()>2016&&document.write("-"+new Date().getFullYear());</script>, Jennifer Scheidegger.</p>
            

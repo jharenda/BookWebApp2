@@ -44,9 +44,7 @@
                        
                     </th>
                      <th>
-                       
-                    </th>
-                    <th>
+                   
                         Book ID
                     </th>
                     <th>
@@ -65,19 +63,29 @@
                 <c:forEach var="book" items="${books}" varStatus="varStatus">
                   
                     <td>
-                                    <button type="submit" formaction="AuthorController?requestType=editAuthor&id=${book.bookId}" value="${book.bookId}" name="editBook" id="editBook">Edit</button>
+                                    <button type="submit" formaction="BookController?requestType=editBook&id=${book.bookId}" value="${book.bookId}" name="editBook" id="editBook">Edit</button>
                                 </td>
                                 <td>
                                     ${book.bookId}
                                 </td>
                                 <td>
-                                    ${book.bookName}
+                                    ${book.title}
                                 </td>
                                 <td>
-                                    <fmt:formatDate pattern="M/d/yyyy" value="${book.isbn}"/>                                 
+                                 ${book.isbn}                               
+                                </td>
+                                 <td>
+                                 <c:choose>
+                                            <c:when test="${not empty book.authorId}">
+                                                ${book.authorId.authorName}
+                                            </c:when>
+                                            <c:otherwise>
+                                                None
+                                            </c:otherwise>
+                                        </c:choose>                           
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="authorId" value="${book.bookId}">
+                                    <input type="checkbox" name="bookId" value="${book.bookId}">
                                                                     </td>
 
                                     

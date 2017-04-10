@@ -28,18 +28,33 @@
             <h1>
                 Enter Author Name to be Added: 
             </h1>
-            <form id="addBookForm" name="addBookForm" method="POST" action="BookController?requestType=saveBook">
+            <form id="addBookForm" name="addBookForm" method="POST" action="BookController?requestType=newSave">
                 <table class="table">  
 
                     <tr>
                         <td>
-                            Book Name:   
+                            Book Title:   
                         </td>
                         <td>
-                            <input type="text" id="bookName" name="bookName" value="${bookName}">
+                            <input type="text" id="bookTitle" name="bookTile" value="${bookName}">
                         </td>
                     </tr>
-
+<tr>
+                        <td>
+                            ISBN:   
+                        </td>
+                        <td>
+                            <input type="text" id="bookIsbn" name="bookIsbn" value="${bookIsbn}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Book Author:   
+                        </td>
+                        <td>
+                            <input type="text" id="bookAuthor" name="bookAuthor" value="${bookAuthor}">
+                        </td>
+                    </tr>
                    
 
                 </table>

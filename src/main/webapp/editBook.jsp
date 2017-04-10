@@ -26,7 +26,7 @@
         <img src ="owlbook.jpg" width="200" height="120" id="owl" >
             <div class="container"> 
            
-            <form id="editBookForm" name="editBookForm" method="POST" action="BookController?requestType=saveBook">
+            <form id="editBookForm" name="editBookForm" method="POST" action="BookController?requestType=saveEdit">
                 <table class="table">  
 
                     <tr>
@@ -34,7 +34,7 @@
                             Book ID     
                         </td>
                         <td>
-                            <input type="text" id="bookId" name="bookId" readonly="readonly" value="${bookId}">
+                            <input type="text" id="bookId" name="bookId" readonly="readonly" value="${book.bookId}">
                         </td>
                     </tr>
 
@@ -43,7 +43,7 @@
                             Book Name   
                         </td>
                         <td>
-                            <input type="text" id="bookName" name="bookName" value="${bookName}">
+                            <input type="text" id="bookTitle" name="bookTitle" value="${book.title}">
                         </td>
                     </tr>
                     <tr>
@@ -57,10 +57,10 @@
 
                     <tr>
                         <td>
-                            Date Added
+                          ISBN
                         </td>
                         <td>
-                            <input type="text" id="dateAdded" name="dateAdded" readonly="readonly" value="${dateAdded}">
+                            <input type="text" id="isbn" name="isbn" readonly="readonly" value="${book.isbn}">
                         </td>
                     </tr>  
 

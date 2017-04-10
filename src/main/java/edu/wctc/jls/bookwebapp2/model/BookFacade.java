@@ -5,9 +5,11 @@
  */
 package edu.wctc.jls.bookwebapp2.model;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -26,6 +28,35 @@ public class BookFacade extends AbstractFacade<Book> {
 
     public BookFacade() {
         super(Book.class);
+    }
+    
+      public List<Book> findByTitle(String title) {
+        String jpql = "select b from Book b where b.title = ?1";
+        TypedQuery<Book> q = getEntityManager().createQuery(jpql, Book.class);
+        q.setParameter(1, title);
+        return q.getResultList();
+    }
+      
+        public void saveOrUpdate (String id, String title, String isbn, Author author) {
+       Book book = new Book();
+        if (id == null) {
+            book.setTitle(title);
+          book.setIsbn(isbn);
+          book.setAuthorId(author);
+           
+          
+        } else {
+            //update
+            book.setBookId(new Integer(id));
+      
+            book.setTitle(title);
+              book.setIsbn(isbn);
+            book.setAuthorId(author);
+            
+        }
+            this.getEntityManager().merge(book);
+        
+
     }
     
 }

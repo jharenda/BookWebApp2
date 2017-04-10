@@ -54,7 +54,7 @@ public class AuthorFacade extends AbstractFacade<Author> {
         } else {
             //update
             author.setAuthorId(new Integer(id));
-           author.setDateAdded(new Date(dateAdded));;
+           author.setDateAdded(new Date(dateAdded));
             author.setAuthorName(name);
             
         }

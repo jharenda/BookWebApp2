@@ -7,6 +7,7 @@ package edu.wctc.jls.bookwebapp2.model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,7 +48,8 @@ public class Book implements Serializable {
     @Column(name = "isbn")
     private String isbn;
     @JoinColumn(name = "author_id", referencedColumnName = "author_id")
-    @ManyToOne
+    @ManyToOne(cascade= CascadeType.MERGE)
+   // @ManyToOne
     //stores entire author object- this is the fk name from the author table- column name is kind of misleading 
     private Author authorId;
 
@@ -82,11 +84,11 @@ public class Book implements Serializable {
         this.isbn = isbn;
     }
 
-    public Author getAuthor() {
+    public Author getAuthorId() {
         return authorId;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthorId(Author authorId) {
         this.authorId = authorId;
     }
 
