@@ -36,7 +36,7 @@
                             Book Title:   
                         </td>
                         <td>
-                            <input type="text" id="bookTitle" name="bookTile" value="${bookName}">
+                            <input type="text" id="title" name="title" value="${title}">
                         </td>
                     </tr>
 <tr>

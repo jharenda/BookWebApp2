@@ -34,7 +34,7 @@
                             Book ID     
                         </td>
                         <td>
-                            <input type="text" id="bookId" name="bookId" readonly="readonly" value="${book.bookId}">
+                            <input type="text" id="bookId" name="bookId" readonly="readonly" value="${bookId}">
                         </td>
                     </tr>
 
@@ -43,7 +43,7 @@
                             Book Name   
                         </td>
                         <td>
-                            <input type="text" id="bookTitle" name="bookTitle" value="${book.title}">
+                            <input type="text" id="bookTitle" name="bookTitle" value="${book.bookTitle}">
                         </td>
                     </tr>
                     <tr>

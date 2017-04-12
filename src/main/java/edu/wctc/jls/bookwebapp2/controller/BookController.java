@@ -40,7 +40,7 @@ public class BookController extends HttpServlet {
      public final String HELP_PAGE = "/session.jsp";
 
     //these are the values "grabbed" from the page
-    public final String BOOL_ID = "bookId";
+    public final String BOOL_ID = "id";
     public final String BOOK_NAME = "bookName";
     public final String DATE_ADDED = "dateAdded";
     public final String BOOK_ISBN = "bookIsbn";
@@ -137,27 +137,44 @@ public class BookController extends HttpServlet {
                
 
                 case EDIT_BOOK_REQ:
-                    destination = _PAGE;
+                    destination = EDIT_BOOK_PAGE;
               
-                    destination =  destination = BOOK_LIST_PAGE;
-                    String bookId = request.getParameter(BOOK_ID);
+                    String bookId = request.getParameter(BOOL_ID);
 
                     Book book = bookService.find(new Integer(bookId));
-                    request.setAttribute(BOOK_ID, book.getBookId());
+                   // request.setAttribute(BOOK_ID, bookId);
                     request.setAttribute(BOOK_NAME, book.getTitle());
-                   request.setAttribute(BOOK_AUTHOR, book.getAuthorId().getAuthorName()); 
-                refreshResults(request, bookService);
+                   request.setAttribute(BOOK_ISBN, book.getIsbn());
+                  // request.setAttribute(BOOK_AUTHOR, book.getAuthorId().getAuthorName()); 
+                //refreshResults(request, bookService);
+                   
+                   
+                   //case EDIT_AUTH_REQ:
+                   // destination = EDIT_AUTHOR_PAGE;
+                   
+                    //String authorId = request.getParameter(AUTHOR_ID);
+
+                   // Author author = authorService.find(new Integer(authorId));
+                   // request.setAttribute(AUTH_ID, author.getAuthorId());
+                   // request.setAttribute(AUTH_NAME, author.getAuthorName()); 
+                   
+                   
+                   
+                   
+                   
+                   
                     break;
 
                     
                 case NEW_SAVE_REQ:
                       destination = BOOK_LIST_PAGE;
-                       String newBookTitle = request.getParameter("newBookName");
-                   String  isbn = request.getParameter("isbn");
-                    String  authorId = request.getParameter("author");
+                       String newBookTitle = request.getParameter("title");
+                   String  isbn = request.getParameter("bookIsbn");
+                    String  authorId = request.getParameter("bookAuthor");
                  
                         Book newBook = new Book();
-                        newBook.setTitle(newBookTitle);
+                      //  newBook.setTitle("lol");
+                        newBook.setTitle(newBookTitle); 
                         newBook.setIsbn(isbn);
                         Author author;
                         if(authorId != null){
