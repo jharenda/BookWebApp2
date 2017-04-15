@@ -79,7 +79,7 @@
             <h1>
                 Enter Author Name to be Added: 
             </h1>
-            <form id="addAuthorForm" name="addAuthorForm" method="POST" action="AuthorController?requestType=saveAuthor">
+            <form id="addAuthorForm" name="addAuthorForm" method="POST" action="AuthorController?requestType=addAuth">
                 <table class="table">  
 
                     <tr>

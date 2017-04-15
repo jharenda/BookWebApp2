@@ -94,8 +94,12 @@
            <table class="table table-bordered, table table-striped, table table-hover">
               
                 <tr>
+                     <th>
+                       Details 
+                    </th>
+                    
                     <th>
-                       
+                       Edit 
                     </th>
                     
                     <th>
@@ -112,7 +116,9 @@
                     </th>
                 </tr>    
                 <c:forEach var="author" items="${authors}" varStatus="varStatus">
-                  
+                   <td>
+                                    <button type="submit" formaction="AuthorController?requestType=authorDetails&id=${author.authorId}" value="${author.authorId}" name="authorDetails" id="authorDetails">Details</button>
+                                </td>
                     <td>
                                     <button type="submit" formaction="AuthorController?requestType=editAuthor&id=${author.authorId}" value="${author.authorId}" name="editAuthor" id="editAuthor">Edit</button>
                                 </td>

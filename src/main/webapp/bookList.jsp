@@ -64,7 +64,7 @@
                   
                     <td>
                                     <button type="submit" formaction="BookController?requestType=editBook&id=${book.bookId}" value="${book.bookId}" name="editBook" id="editBook">Edit</button>
-                                     <button type="submit" formaction="AuthorController?requestType=editAuthor&id=${author.authorId}" value="${author.authorId}" name="editAuthor" id="editAuthor">Edit</button>
+                                     
                                 </td>
                                 <td>
                                     ${book.bookId}

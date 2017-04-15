@@ -5,13 +5,16 @@
  */
 package edu.wctc.jls.bookwebapp2.controller;
 
-import edu.wctc.jls.bookwebapp2.model.Author;
-import edu.wctc.jls.bookwebapp2.model.AuthorFacade;
-import edu.wctc.jls.bookwebapp2.model.Book;
-import edu.wctc.jls.bookwebapp2.model.BookFacade;
+import edu.wctc.jls.bookwebapp2.entity.Author;
+
+import edu.wctc.jls.bookwebapp2.entity.Book;
+import edu.wctc.jls.bookwebapp2.service.AuthorService;
+import edu.wctc.jls.bookwebapp2.service.BookService;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
@@ -22,6 +25,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -65,16 +70,18 @@ public class BookController extends HttpServlet {
     public final String VIEW_EMAIL_REQ = "viewEmail";
     public final String EDIT_COUNT = "";
     public final String LIST_COUNT = "";
+    
+    public final String BOOK_AUTH_ID = "bookAuthId"; 
 
  
     private int sessionListPageVisits = 0;
     private int sessionEditPageVisits = 0;
     
     // new - this autocreates authorservice- this is automated dependency injection
-    @EJB
-    private AuthorFacade authorService;
-    @EJB 
-    private BookFacade bookService; 
+  
+    private AuthorService authorService;
+  
+    private BookService bookService; 
    
     
     /**
@@ -115,20 +122,22 @@ public class BookController extends HttpServlet {
                     break;
                 case DELETE_BOOK_REQ:
                     destination = BOOK_LIST_PAGE;
-                    Book bookToDelete = new Book(); 
+                   // Book bookToDelete = new Book(); 
                     String[] booksToDelete = request.getParameterValues(BOOK_ID_CBX);
                     if (booksToDelete != null) {
                         for (String id : booksToDelete) {
                             // method no longer exists 
-                            bookToDelete = bookService.find(new Integer (id));
+                            //bookToDelete = bookService.find(new Integer (id));
+                            Book bookToDelete =   bookService.findById(id); 
                             bookService.remove(bookToDelete); 
-                           
+                   
                            
                         }
                     }
                     refreshResults(request, bookService);
                     break;
 
+                    
                 case ADD_BOOK_REQ:
 
                     destination = ADD_BOOK_PAGE;
@@ -139,30 +148,12 @@ public class BookController extends HttpServlet {
                 case EDIT_BOOK_REQ:
                     destination = EDIT_BOOK_PAGE;
               
-                    String bookId = request.getParameter(BOOL_ID);
+                    String bookId = request.getParameter("id");
 
-                    Book book = bookService.find(new Integer(bookId));
-                   // request.setAttribute(BOOK_ID, bookId);
-                    request.setAttribute(BOOK_NAME, book.getTitle());
-                   request.setAttribute(BOOK_ISBN, book.getIsbn());
-                  // request.setAttribute(BOOK_AUTHOR, book.getAuthorId().getAuthorName()); 
-                //refreshResults(request, bookService);
-                   
-                   
-                   //case EDIT_AUTH_REQ:
-                   // destination = EDIT_AUTHOR_PAGE;
-                   
-                    //String authorId = request.getParameter(AUTHOR_ID);
-
-                   // Author author = authorService.find(new Integer(authorId));
-                   // request.setAttribute(AUTH_ID, author.getAuthorId());
-                   // request.setAttribute(AUTH_NAME, author.getAuthorName()); 
-                   
-                   
-                   
-                   
-                   
-                   
+                    Book book = bookService.findById(bookId);
+                    request.setAttribute("bookId", book.getBookId());
+                    request.setAttribute("bookTitle", book.getTitle());
+             
                     break;
 
                     
@@ -178,10 +169,12 @@ public class BookController extends HttpServlet {
                         newBook.setIsbn(isbn);
                         Author author;
                         if(authorId != null){
-                            author = authorService.find(new Integer(authorId));
+                           // author = authorService.find(new Integer(authorId));
+                            author = authorService.findById((authorId));
                             newBook.setAuthorId(author);
                         }
-                        bookService.create(newBook);
+                      //  bookService.create(newBook);
+                      
                         refreshResults(request, bookService);
                     break;
 
@@ -210,7 +203,7 @@ public class BookController extends HttpServlet {
      */
   
 
-    private void refreshResults(HttpServletRequest request, BookFacade bookService)
+    private void refreshResults(HttpServletRequest request, BookService bookService)
             throws ClassNotFoundException, SQLException {
         List<Book> books = bookService.findAll(); 
                
@@ -256,5 +249,14 @@ public class BookController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+       @Override
+    public void init() throws ServletException {
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils
+                        .getWebApplicationContext(sctx);
+        bookService = (BookService)ctx.getBean("bookService");
+    }
 
 }
