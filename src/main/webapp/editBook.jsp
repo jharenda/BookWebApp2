@@ -43,7 +43,7 @@
                             Book Name   
                         </td>
                         <td>
-                            <input type="text" id="bookTitle" name="bookTitle" value="${book.bookTitle}">
+                            <input type="text" id="bookTitle" name="bookTitle" value="${bookTitle}">
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +60,7 @@
                           ISBN
                         </td>
                         <td>
-                            <input type="text" id="isbn" name="isbn" readonly="readonly" value="${book.isbn}">
+                            <input type="text" id="isbn" name="isbn" readonly="readonly" value="${isbn}">
                         </td>
                     </tr>  
 

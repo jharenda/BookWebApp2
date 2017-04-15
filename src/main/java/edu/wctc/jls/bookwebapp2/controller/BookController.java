@@ -139,32 +139,30 @@ public class BookController extends HttpServlet {
                 case EDIT_BOOK_REQ:
                     destination = EDIT_BOOK_PAGE;
               
-                    String bookId = request.getParameter(BOOL_ID);
+                    String bookId = request.getParameter("id");
 
                     Book book = bookService.find(new Integer(bookId));
-                   // request.setAttribute(BOOK_ID, bookId);
-                    request.setAttribute(BOOK_NAME, book.getTitle());
-                   request.setAttribute(BOOK_ISBN, book.getIsbn());
-                  // request.setAttribute(BOOK_AUTHOR, book.getAuthorId().getAuthorName()); 
-                //refreshResults(request, bookService);
-                   
-                   
-                   //case EDIT_AUTH_REQ:
-                   // destination = EDIT_AUTHOR_PAGE;
-                   
-                    //String authorId = request.getParameter(AUTHOR_ID);
+                   request.setAttribute("bookId", book.getBookId());
+                    request.setAttribute("bookTitle", book.getTitle());
+                   request.setAttribute("isbn", book.getIsbn());
+                  request.setAttribute("bookAuthor", book.getAuthorId().getAuthorName()); 
 
-                   // Author author = authorService.find(new Integer(authorId));
-                   // request.setAttribute(AUTH_ID, author.getAuthorId());
-                   // request.setAttribute(AUTH_NAME, author.getAuthorName()); 
-                   
-                   
-                   
-                   
-                   
-                   
                     break;
+                    
+                case SAVE_EDIT_REQ:
+                       destination = BOOK_LIST_PAGE;
+                       String editBookId = request.getParameter("id");
+              
+                       String editBookTitle = request.getParameter("title");
+                   String  editIsbn = request.getParameter("bookIsbn");
+                   
+Author bookEditAuthor = authorService.find(new Integer(request.getParameter("author")));
+                     bookService.saveOrUpdate(editBookId, editBookTitle, editIsbn, bookEditAuthor);
+                  
 
+                    refreshResults(request, bookService);
+
+break; 
                     
                 case NEW_SAVE_REQ:
                       destination = BOOK_LIST_PAGE;
