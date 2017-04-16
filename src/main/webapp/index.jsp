@@ -92,7 +92,7 @@ scope="session" />
             </h1>
             <p id ="listLink">  <a href="BookController?requestType=bookList">View Book List</a></p>
             <p id ="listLink">  <a href="AuthorController?requestType=authorList">View Author List</a></p>
-           
+            <p>${errMsg}</p>
 <footer class="footer">
           <p>&copy; 2016<script>new Date().getFullYear()>2016&&document.write("-"+new Date().getFullYear());</script>, Jennifer Scheidegger.</p>
            

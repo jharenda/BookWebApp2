@@ -153,9 +153,36 @@ public class BookController extends HttpServlet {
                     Book book = bookService.findById(bookId);
                     request.setAttribute("bookId", book.getBookId());
                     request.setAttribute("bookTitle", book.getTitle());
-             
+             request.setAttribute("isbn", book.getIsbn());
+              request.setAttribute("bookAuthId", book.getAuthorId().getAuthorId());
+              request.setAttribute("bookAuthIdValue", book.getAuthorId());
                     break;
+                    
+                    
+                case SAVE_EDIT_REQ:
+                    destination = BOOK_LIST_PAGE;
+                       String editBookId = request.getParameter("bookId");
+              
+                       String editBookTitle = request.getParameter("bookTitle");
+                   String  editIsbn = request.getParameter("isbn");
 
+                  book = bookService.findById(editBookId);
+                     Author editAuthor = ///request.getParameter("bookAuthId");
+ book.getAuthorId();      
+                           
+                           //if (editAuthor != null) {
+                              //debugger saying this is null-  
+                           //  Author  author = authorService.findById(editAuthor);
+                           //     book.setAuthorId(author);
+                           // }
+                             book.setTitle(editBookTitle);
+                            book.setIsbn(editIsbn);
+                            bookService.edit(book);   
+
+                    refreshResults(request, bookService);
+
+                    
+                    break; 
                     
                 case NEW_SAVE_REQ:
                       destination = BOOK_LIST_PAGE;
@@ -164,16 +191,17 @@ public class BookController extends HttpServlet {
                     String  authorId = request.getParameter("bookAuthor");
                  
                         Book newBook = new Book();
-                      //  newBook.setTitle("lol");
+                        //newBook.setTitle("lol");
                         newBook.setTitle(newBookTitle); 
                         newBook.setIsbn(isbn);
-                        Author author;
-                        if(authorId != null){
+                        newBook.setIsbn("123");
+                  Author  author = null; 
+                      //  if(authorId != null){
                            // author = authorService.find(new Integer(authorId));
                             author = authorService.findById((authorId));
                             newBook.setAuthorId(author);
-                        }
-                      //  bookService.create(newBook);
+                      // }
+                        bookService.edit(newBook);
                       
                         refreshResults(request, bookService);
                     break;
@@ -190,7 +218,7 @@ public class BookController extends HttpServlet {
             }
         } catch (Exception e) {
             destination = HOME_PAGE;
-            request.setAttribute("errMsg", e.getMessage());
+            request.setAttribute("errMsg",  e.getMessage() + "" + e.getCause());
         }
         RequestDispatcher view
                 = request.getRequestDispatcher(response.encodeURL(destination));

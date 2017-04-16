@@ -56,6 +56,7 @@
                     <th>
                          Author
                     </th>
+                    <th>Author Id</th>
                     <th>
                       Delete?
                     </th>
@@ -85,6 +86,7 @@
                                             </c:otherwise>
                                         </c:choose>                           
                                 </td>
+                                <td>${authorId}</td>
                                 <td>
                                     <input type="checkbox" name="bookId" value="${book.bookId}">
                                                                     </td>

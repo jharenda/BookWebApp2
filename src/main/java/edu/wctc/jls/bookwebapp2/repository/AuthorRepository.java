@@ -13,6 +13,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Integer>, Serializable {
+      @Query("SELECT a FROM Author a LEFT JOIN FETCH a.bookSet WHERE a.authorId = (:id)")
+    public Author findByIdAndFetchBooksEagerly(@Param("id") Integer id);
+    
+    
+    
     
     @Query("SELECT a.authorName FROM Author a")
     public Object[] findAllWithNameOnly();
