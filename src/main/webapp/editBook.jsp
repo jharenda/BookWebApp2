@@ -46,14 +46,7 @@
                             <input type="text" id="bookTitle" name="bookTitle" value="${bookTitle}">
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            Author Name   
-                        </td>
-                        <td>
-                            <input type="text" id="authorName" name="authorName" value="${authorName}">
-                        </td>
-                    </tr>
+               
 
                     <tr>
                         <td>
@@ -68,10 +61,17 @@
                      Author ID
                         </td>
                         <td>
-                            <input type="text" id="bookAuthId" name="bookAuthId"  value="${bookAuthId}">
+                            <input type="text" id="bookAuthId" name="bookAuthId" value="${bookAuthId}">
                         </td>
                     </tr> 
-
+  <tr>
+                        <td>
+                     Author ID Value 
+                        </td>
+                        <td>
+                            <input type="text" id="bookAuthIdValue" name="bookAuthIdValue" value="${book.authorId}">
+                        </td>
+                    </tr> 
                 </table>
                 <br>
                 <input type="submit" name="submit" id="submit" value="Submit">

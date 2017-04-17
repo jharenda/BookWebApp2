@@ -86,7 +86,7 @@
                                             </c:otherwise>
                                         </c:choose>                           
                                 </td>
-                                <td>${authorId}</td>
+                                <td>${book.authorId}</td>
                                 <td>
                                     <input type="checkbox" name="bookId" value="${book.bookId}">
                                                                     </td>

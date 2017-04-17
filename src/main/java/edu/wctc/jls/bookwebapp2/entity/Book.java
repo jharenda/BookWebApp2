@@ -49,8 +49,6 @@ public class Book implements Serializable {
     private String isbn;
     @JoinColumn(name = "author_id", referencedColumnName = "author_id")
     @ManyToOne(cascade= CascadeType.MERGE)
-   // @ManyToOne
-    //stores entire author object- this is the fk name from the author table- column name is kind of misleading 
     private Author authorId;
 
     public Book() {

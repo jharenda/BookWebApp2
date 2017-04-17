@@ -14,5 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>, Serializable {
-    
+   @Query("SELECT b FROM Book b WHERE b.authorId.authorId = :id")
+    public abstract List<Book> searchByAuthorId(@Param("id") Integer id);
+     
 }

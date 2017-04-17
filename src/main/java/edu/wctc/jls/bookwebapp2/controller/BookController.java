@@ -34,7 +34,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 @WebServlet(name = "BookController", urlPatterns = {"/BookController"})
 public class BookController extends HttpServlet {
- public final String REQ_TYPE = "requestType";
+
+    public final String REQ_TYPE = "requestType";
 
     // page variables   
     public final String HOME_PAGE = "/index.jsp";
@@ -42,14 +43,14 @@ public class BookController extends HttpServlet {
     public final String ADD_BOOK_PAGE = "/addBook.jsp";
     public final String EDIT_BOOK_PAGE = "/editBook.jsp";
     public final String INFO_PAGE = "/adminInfo.jsp";
-     public final String HELP_PAGE = "/session.jsp";
+    public final String HELP_PAGE = "/session.jsp";
 
     //these are the values "grabbed" from the page
     public final String BOOL_ID = "id";
     public final String BOOK_NAME = "bookName";
     public final String DATE_ADDED = "dateAdded";
     public final String BOOK_ISBN = "bookIsbn";
-      public final String BOOK_AUTHOR = "bookAuthor";
+    public final String BOOK_AUTHOR = "bookAuthor";
     public final String BOOK_ID_CBX = "bookId";
     public final String BOOK_ID = "id";
     public final String BOOK_TABLE_NAME = "book";
@@ -70,20 +71,17 @@ public class BookController extends HttpServlet {
     public final String VIEW_EMAIL_REQ = "viewEmail";
     public final String EDIT_COUNT = "";
     public final String LIST_COUNT = "";
-    
-    public final String BOOK_AUTH_ID = "bookAuthId"; 
 
- 
+    public final String BOOK_AUTH_ID = "bookAuthId";
+
     private int sessionListPageVisits = 0;
     private int sessionEditPageVisits = 0;
-    
+
     // new - this autocreates authorservice- this is automated dependency injection
-  
     private AuthorService authorService;
-  
-    private BookService bookService; 
-   
-    
+
+    private BookService bookService;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -101,124 +99,117 @@ public class BookController extends HttpServlet {
 
         String destination = HOME_PAGE;
         String req_Action = request.getParameter(REQ_TYPE);
-        ServletContext sc =
-      getServletConfig().getServletContext();
-    String adminEmail = sc.getInitParameter("admin email");
+        ServletContext sc
+                = getServletConfig().getServletContext();
+        String adminEmail = sc.getInitParameter("admin email");
 
         try {
-    
 
             switch (req_Action) {
 
                 case BOOK_LIST_REQ:
                     destination = BOOK_LIST_PAGE;
                     sessionListPageVisits++;
-                    
-                   List<Book> books = bookService.findAll(); 
-                            //should fix the magic number here- 50
-                       
+
+                    List<Book> books = bookService.findAll();
+                    //should fix the magic number here- 50
+
                     request.setAttribute("books", books);
                     request.setAttribute("sessionListPageVisits", sessionListPageVisits);
                     break;
                 case DELETE_BOOK_REQ:
                     destination = BOOK_LIST_PAGE;
-                   // Book bookToDelete = new Book(); 
+                    // Book bookToDelete = new Book(); 
                     String[] booksToDelete = request.getParameterValues(BOOK_ID_CBX);
                     if (booksToDelete != null) {
                         for (String id : booksToDelete) {
                             // method no longer exists 
                             //bookToDelete = bookService.find(new Integer (id));
-                            Book bookToDelete =   bookService.findById(id); 
-                            bookService.remove(bookToDelete); 
-                   
-                           
+                            Book bookToDelete = bookService.findById(id);
+                            bookService.remove(bookToDelete);
+
                         }
                     }
                     refreshResults(request, bookService);
                     break;
 
-                    
                 case ADD_BOOK_REQ:
 
                     destination = ADD_BOOK_PAGE;
 
                     break;
-               
 
                 case EDIT_BOOK_REQ:
                     destination = EDIT_BOOK_PAGE;
-              
+
                     String bookId = request.getParameter("id");
 
                     Book book = bookService.findById(bookId);
                     request.setAttribute("bookId", book.getBookId());
                     request.setAttribute("bookTitle", book.getTitle());
-             request.setAttribute("isbn", book.getIsbn());
-              request.setAttribute("bookAuthId", book.getAuthorId().getAuthorId());
-              request.setAttribute("bookAuthIdValue", book.getAuthorId());
+                    request.setAttribute("isbn", book.getIsbn());
+                    request.setAttribute("bookAuthId", book.getAuthorId().getAuthorId());
+
                     break;
-                    
-                    
+
                 case SAVE_EDIT_REQ:
                     destination = BOOK_LIST_PAGE;
-                       String editBookId = request.getParameter("bookId");
-              
-                       String editBookTitle = request.getParameter("bookTitle");
-                   String  editIsbn = request.getParameter("isbn");
+                    String editBookId = request.getParameter("bookId");
 
-                  book = bookService.findById(editBookId);
-                     Author editAuthor = ///request.getParameter("bookAuthId");
- book.getAuthorId();      
-                           
-                           //if (editAuthor != null) {
-                              //debugger saying this is null-  
-                           //  Author  author = authorService.findById(editAuthor);
-                           //     book.setAuthorId(author);
-                           // }
-                             book.setTitle(editBookTitle);
-                            book.setIsbn(editIsbn);
-                            bookService.edit(book);   
+                    String editBookTitle = request.getParameter("bookTitle");
+                    String editIsbn = request.getParameter("isbn");
+                    String editAuthorId = request.getParameter("bookAuthId");
 
+                    Book editBook = bookService.findById(editBookId);
+                    editBook.setTitle(editBookTitle);
+                    editBook.setIsbn(editIsbn);
+
+                    if (editAuthorId != null) {
+                        Author editAuthor = authorService.findById(editAuthorId);
+                        editBook.setAuthorId(editAuthor);
+
+                    }
+                    bookService.edit(editBook);
                     refreshResults(request, bookService);
 
-                    
-                    break; 
-                    
+                    break;
+
                 case NEW_SAVE_REQ:
-                      destination = BOOK_LIST_PAGE;
-                       String newBookTitle = request.getParameter("title");
-                   String  isbn = request.getParameter("bookIsbn");
-                    String  authorId = request.getParameter("bookAuthor");
-                 
-                        Book newBook = new Book();
-                        //newBook.setTitle("lol");
-                        newBook.setTitle(newBookTitle); 
-                        newBook.setIsbn(isbn);
-                        newBook.setIsbn("123");
-                  Author  author = null; 
-                      //  if(authorId != null){
-                           // author = authorService.find(new Integer(authorId));
-                            author = authorService.findById((authorId));
-                            newBook.setAuthorId(author);
-                      // }
-                        bookService.edit(newBook);
-                      
-                        refreshResults(request, bookService);
+                    destination = BOOK_LIST_PAGE;
+                    String newBookTitle = request.getParameter("title");
+                    String isbn = request.getParameter("bookIsbn");
+                    String authorId = request.getParameter("bookAuthor");
+
+                    Book newBook = new Book();
+                    //newBook.setTitle("lol");
+                    newBook.setTitle(newBookTitle);
+                    newBook.setIsbn(isbn);
+                    //  newBook.setIsbn("123");
+                    Author author = null;
+                    if (authorId != null) {
+
+                        author = authorService.findById((authorId));
+                        newBook.setAuthorId(author);
+                    }
+                    bookService.edit(newBook);
+
+                    refreshResults(request, bookService);
                     break;
 
                 case "home":
                     destination = destination = HOME_PAGE;
                     break;
-                    
-                default: 
+
+                default:
                     response.sendRedirect("session.jsp");
-                    
-                    break; 
-                    
+
+                    break;
+
             }
         } catch (Exception e) {
             destination = HOME_PAGE;
-            request.setAttribute("errMsg",  e.getMessage() + "" + e.getCause());
+            e.printStackTrace();
+            request.setAttribute("errMsg", e.getMessage() + "" + e.getCause());
         }
         RequestDispatcher view
                 = request.getRequestDispatcher(response.encodeURL(destination));
@@ -229,15 +220,12 @@ public class BookController extends HttpServlet {
         This helper method just makes the code more modular and readable.
         It's single responsibility principle for a method.
      */
-  
-
     private void refreshResults(HttpServletRequest request, BookService bookService)
             throws ClassNotFoundException, SQLException {
-        List<Book> books = bookService.findAll(); 
-               
-        request.setAttribute("books",books);
+        List<Book> books = bookService.findAll();
+
+        request.setAttribute("books", books);
     }
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -277,14 +265,15 @@ public class BookController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-       @Override
+
+    @Override
     public void init() throws ServletException {
         ServletContext sctx = getServletContext();
         WebApplicationContext ctx
                 = WebApplicationContextUtils
                         .getWebApplicationContext(sctx);
-        bookService = (BookService)ctx.getBean("bookService");
+        bookService = (BookService) ctx.getBean("bookService");
+        authorService = (AuthorService) ctx.getBean("authorService");
     }
 
 }
