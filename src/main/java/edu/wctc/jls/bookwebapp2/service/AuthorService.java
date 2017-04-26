@@ -3,6 +3,7 @@ package edu.wctc.jls.bookwebapp2.service;
 import edu.wctc.jls.bookwebapp2.entity.Author;
 import edu.wctc.jls.bookwebapp2.repository.AuthorRepository;
 import edu.wctc.jls.bookwebapp2.repository.BookRepository;
+import edu.wctc.jls.bookwebapp2.service.DeleteNotificationEmailSender; 
 import java.util.List;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class AuthorService {
 
     @Inject
     private BookRepository bookRepo;
+    @Inject 
+    private DeleteNotificationEmailSender deleteNoticeEmailSender; 
 
     public AuthorService() {
     }
@@ -80,6 +83,7 @@ public class AuthorService {
     public void remove(Author author) {
         LOG.debug("Deleting author: " + author.getAuthorName());
         authorRepo.delete(author);
+        deleteNoticeEmailSender.sendEmail("Author"); 
     }
 
     /**

@@ -143,6 +143,7 @@ public class AuthorController extends HttpServlet {
                             ////////////////////////////////////////
                             authorService.remove(author);
                         }
+                       // deleteSender.sendEmail("Author");
                     }
                     refreshResults(request, authorService);
                     break;
