@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -194,6 +197,34 @@ public class BookController extends HttpServlet {
                     bookService.edit(newBook);
 
                     refreshResults(request, bookService);
+                    break;
+                    
+                    
+                     case SEARCH_ACTION:
+                    JsonObjectBuilder builder = null;
+                    JsonObject bookJson = null;
+                    String searchKey = request.getParameter("searchKey");
+                    List<Book> bookList = bookService.searchForBookByAny(searchKey);
+                    // Only return first match or nothing if none found
+                    if(!bookList.isEmpty()) {
+                        Book searchBook = bookList.get(0);
+                        builder = Json.createObjectBuilder()
+                            .add("bookId", searchBook.getBookId())
+                            .add("bookName", searchBook.getName())
+                            .add("bookIsbn", searchBook.getIsbn())
+                            .add("bookAuthor", searchBook.getAuthor())
+                            
+                        bookJson = builder.build();
+                    }
+                    
+                    PrintWriter out = response.getWriter();
+                    response.setContentType("application/json");
+                    if(builder == null) {
+                        out.write("{}");
+                    } else {
+                        out.write(bookJson.toString());
+                    }
+                    out.flush();
                     break;
 
                 case "home":

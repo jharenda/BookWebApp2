@@ -90,6 +90,12 @@ scope="session" />
             <h1 style="color: ${fontColor}">
                 Administrative Author Tasks
             </h1>
+                 <div class="header">
+            <!-- These items are handled by app.js -->
+            <input type="text" id="searchKey"/>
+            <button id="btnSearch">Search</button>
+            <button id="btnAdd">Quick add new Author</button>
+        </div>
             <p id ="listLink">  <a href="BookController?requestType=bookList">View Book List</a></p>
             <p id ="listLink">  <a href="AuthorController?requestType=authorList">View Author List</a></p>
             <p>${errMsg}</p>

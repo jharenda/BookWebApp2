@@ -1,15 +1,24 @@
 package edu.wctc.jls.bookwebapp2.service;
 
 import edu.wctc.jls.bookwebapp2.entity.Book;
+import edu.wctc.jls.bookwebapp2.entity.Book_;
 import edu.wctc.jls.bookwebapp2.repository.AuthorRepository;
 import edu.wctc.jls.bookwebapp2.repository.BookRepository;
 import java.util.List;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
+
 
 /**
  * This is a special Spring-enabled service class that delegates work to 
@@ -36,6 +45,14 @@ public class BookService {
     private AuthorRepository authorRepo;
 
     public BookService() {
+    }
+    
+    
+     private EntityManager em;
+
+   
+    protected EntityManager getEntityManager() {
+        return em;
     }
     
     public List<Book> findAll() {
@@ -66,6 +83,40 @@ public class BookService {
     public Book edit(Book book) {
         return bookRepo.saveAndFlush(book);
     }
+    /**
+     * Finds hotels by a search key, which is checked against one of these 
+     * fields: name, city, zip
+     * @param searchKey - a value or portion of a value of a field for name, 
+     * city or zip
+     * @return matching hotel records
+     */
+    public List<Book> searchForBookByAny(String searchKey) {
+        // put wildcard symbols on both sides of searchKey
+        searchKey = new StringBuilder("%").append(searchKey).append("%").toString();
+        // Use Criteria style queries so we can change the search field easily
+        CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Book> criteriaQuery = builder.createQuery(Book.class);
+        Root<Book> book = criteriaQuery.from(Book.class);
+        
+        // Begin by trying the name field
+        criteriaQuery.where(builder.like(book.get(Book.title),searchKey));
+        TypedQuery<Book> q = getEntityManager().createQuery(criteriaQuery);
+        List<Book> books = q.getResultList();
+        
+        if(books.isEmpty()) {
+            // Not found so try another field
+            criteriaQuery.where(builder.like(book.get(Book.isbn),searchKey));
+            q = getEntityManager().createQuery(criteriaQuery);
+            books = q.getResultList();
+            
+          
+        }
+        
+        return books;
+    }
+    
+}
+
     
 
   //  public List<Book> searchByAuthorId(Integer id) {
