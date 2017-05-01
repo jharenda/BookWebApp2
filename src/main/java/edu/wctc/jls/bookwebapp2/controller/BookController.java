@@ -72,6 +72,7 @@ public class BookController extends HttpServlet {
     public final String DELETE_BOOK_REQ = "deleteBook";
     public final String HELP = "help";
     public final String VIEW_EMAIL_REQ = "viewEmail";
+    public final String SEARCH_ACTION = "search";
     public final String EDIT_COUNT = "";
     public final String LIST_COUNT = "";
 
@@ -210,9 +211,9 @@ public class BookController extends HttpServlet {
                         Book searchBook = bookList.get(0);
                         builder = Json.createObjectBuilder()
                             .add("bookId", searchBook.getBookId())
-                            .add("bookName", searchBook.getName())
-                            .add("bookIsbn", searchBook.getIsbn())
-                            .add("bookAuthor", searchBook.getAuthor())
+                            .add("bookName", searchBook.getTitle())
+                            .add("bookIsbn", searchBook.getIsbn());
+                           // .add("bookAuthor", searchBook.getAuthor())
                             
                         bookJson = builder.build();
                     }

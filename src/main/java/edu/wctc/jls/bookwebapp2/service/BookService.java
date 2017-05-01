@@ -98,7 +98,7 @@ public class BookService {
         CriteriaQuery<Book> criteriaQuery = builder.createQuery(Book.class);
         Root<Book> book = criteriaQuery.from(Book.class);
         
-        // Begin by trying the name field
+         //Begin by trying the name field
         criteriaQuery.where(builder.like(book.get(Book.title),searchKey));
         TypedQuery<Book> q = getEntityManager().createQuery(criteriaQuery);
         List<Book> books = q.getResultList();
